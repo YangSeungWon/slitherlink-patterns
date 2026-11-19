@@ -13,7 +13,7 @@ python3 build.py
 ## 확장 프로그램 (`extension/`)
 
 - `engine.js`: 힌트 엔진. 페이지에 정리한 패턴을 쉬운 순서로 판에 대 보고, 처음 들어맞는 것을 돌려준다. 실수 확인용 풀이기도 들어 있다.
-- `content.js`: puzzle-loop.com 페이지 안에서 `Game.currentState`를 읽고 패널과 하이라이트를 그린다. 도움 단계는 패턴 / 힌트 / 실수 / 풀이 네 가지이고, 틀린 곳 바로 표시는 따로 켜고 끈다. 풀이 단계에서 두는 수는 게임 자체의 이동 처리(`applyCurrentMoveToState`)로 넣어서 되돌리기가 된다.
+- `content.js`: puzzle-loop.com 페이지 안에서 `Game.currentState`를 읽고 패널과 하이라이트를 그린다. 도움 단계는 패턴 / 힌트 / 따라가기 / 실수 / 풀이 다섯 가지이고, 틀린 곳 바로 표시는 따로 켜고 끈다. 풀이 단계에서 두는 수는 게임 자체의 이동 처리(`applyCurrentMoveToState`)로 넣어서 되돌리기가 된다.
 - `test.js`: 힌트만 따라가서 퍼즐이 끝까지 풀리는지, 힌트가 정답과 어긋나지 않는지 확인한다.
 
 ```

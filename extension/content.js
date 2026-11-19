@@ -12,6 +12,7 @@
   const MODES = [
     ['pattern', '패턴', '판에서 지금 쓸 수 있는 패턴 자리를 모두 번호로 표시한다.'],
     ['hint', '힌트', '가장 쉬운 다음 한 수를 찾아 어디를 볼지부터 알려 준다.'],
+    ['step', '따라가기', '규칙을 한 단계씩 보여 준다. 보여 준 대로 그리면 다음 단계로 넘어간다.'],
     ['mistake', '실수', '힌트 없이, 틀린 선이나 x가 생기면 바로 표시한다.'],
     ['solve', '풀이', '한 수씩 두거나 끝까지 풀어 준다.'],
   ];
@@ -19,6 +20,7 @@
 
   let G, board, W, H, layer, panel, msg, actions, solution = null, lastKey = '';
   let mode = 'hint', current = null, revealAll = false, overlaySol = false, liveCheck = false;
+  let plan = null, base = null, idx = 0;  // 따라가기: base 판에서 시작한 단계 목록
 
   function ready() {
     const g = window.Game;
@@ -86,6 +88,7 @@
     if (key === lastKey) return;
     lastKey = key;
     current = null;
+    plan = null;
     refresh();
   }
 
@@ -163,6 +166,7 @@
     clearMarks();
     if (overlaySol) { const sol = getSolution(); if (sol) markEdges(sol.map((v, e) => [e, v]).filter(([, v]) => v === 1), 'lh-ghost'); }
     if (mode === 'mistake') return showMistakes(true);
+    if (mode === 'step') { if (liveCheck) liveWrong(); return showStep(); }
     if (liveCheck) liveWrong();
     if (mode === 'pattern') return showPatterns();
     if (mode === 'hint' || mode === 'solve') {
@@ -226,6 +230,53 @@
     }
   }
 
+  // ------------------------------------------------------------ 따라가기
+
+  function startPlan() {
+    const st = readState();
+    plan = []; idx = 0; base = st;
+    const sol = getSolution();
+    if (sol) {
+      const wrong = wrongEdges(st, sol);
+      if (wrong.length) { plan.wrong = wrong; return; }
+      if (st.every((v, e) => (sol[e] === 1) === (v === 1))) { plan.done = true; return; }
+    }
+  }
+
+  // i번째 단계까지 계산해 둔다. 못 찾으면 false.
+  function ensureStep(i) {
+    while (plan.length <= i) {
+      const sim = base.slice();
+      for (const h of plan) for (const [e, v] of h.edges) sim[e] = v;
+      if (!sim.includes(-1)) return false;
+      const h = LoopEngine.nextHint(board, sim);
+      if (!h) return false;
+      plan.push(h);
+    }
+    return true;
+  }
+
+  function showStep() {
+    if (!plan) startPlan();
+    const btn = (a) => actions.querySelector(`[data-a=${a}]`);
+    const setBtns = (prev, next, put) => { btn('prev').disabled = !prev; btn('next').disabled = !next; btn('put').disabled = !put; };
+    if (plan.wrong) {
+      markEdges(plan.wrong, 'lh-wrong');
+      say(`틀린 표시가 ${plan.wrong.length}개 있다. 보라색을 고치면 이어서 간다.`);
+      return setBtns(false, false, false);
+    }
+    if (plan.done || !ensureStep(idx)) {
+      say(plan.done || (idx === 0 && !base.includes(-1)) ? '다 풀었다.' : idx === 0 ? '지금 판에서 찾을 수 있는 단계가 없다.' : '여기서 끝이다.');
+      return setBtns(idx > 0, false, false);
+    }
+    for (let j = 0; j < idx; j++) markEdges(plan[j].edges, 'lh-done');
+    const h = plan[idx];
+    markCells(h.cells); markVerts(h.verts); markEdges(h.edges, 'lh-new');
+    const where = idx ? `<span style="color:#d1452b">${idx}단계 뒤</span>` : '지금';
+    say(`<b>${where} · ${h.name}</b><br>${h.text} ${link(h.id, '설명')}`);
+    setBtns(idx > 0, true, true);
+  }
+
   // 정답과 어긋난 게 있으면 힌트 대신 그걸 알린다.
   function findHint() {
     const st = readState();
@@ -250,6 +301,14 @@
       ['hint', '힌트', () => busy(() => { current = findHint(); if (current) { current.revealed = false; refresh(); } })],
       ['show', '보여주기', () => { if (!current) return; current.revealed = true; refresh(); }],
       ['check', '실수 확인', () => busy(() => { current = null; refresh(); showMistakes(false); })],
+    ],
+    step: [
+      ['prev', '◀', () => { if (idx > 0) { idx--; refresh(); } }],
+      ['next', '▶', () => busy(() => { idx++; if (!ensureStep(idx)) idx--; refresh(); })],
+      ['put', '여기까지 두기', () => busy(() => {
+        const edges = []; for (let j = 0; j <= idx; j++) edges.push(...plan[j].edges);
+        play(edges);  // 판이 바뀌면 watch가 새 판에서 다시 1단계부터 잡는다
+      })],
     ],
     mistake: [],
     solve: [
@@ -277,13 +336,13 @@
 
   function setMode(m) {
     panel.querySelector('.lh-live').style.display = m === 'mistake' ? 'none' : 'flex';
-    mode = m; current = null; revealAll = false;
+    mode = m; current = null; revealAll = false; plan = null;
     if (m !== 'solve') overlaySol = false;
     try { localStorage.setItem('lh-mode', m); } catch (e) {}
     panel.querySelectorAll('.lh-modes button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
     panel.querySelector('.lh-desc').textContent = MODES.find(x => x[0] === m)[2];
     renderActions();
-    if (m === 'pattern' || m === 'mistake' || liveCheck) busy(refresh); else refresh();
+    if (m === 'pattern' || m === 'mistake' || m === 'step' || liveCheck) busy(refresh); else refresh();
   }
 
   function renderActions() {
@@ -298,7 +357,7 @@
     const c = document.createElement('button');
     c.textContent = '지우기';
     c.onclick = () => { current = null; overlaySol = false; revealAll = false; renderActions(); clearMarks(); say(''); };
-    if (mode !== 'mistake') actions.appendChild(c);
+    if (mode !== 'mistake' && mode !== 'step') actions.appendChild(c);
   }
 
   // ------------------------------------------------------------ 패널
@@ -316,13 +375,15 @@
 .lh-tag{background:#1d1d1b;color:#fff;font:600 9.5px/14px sans-serif;text-align:center;border-radius:3px;z-index:2}
 .lh-on.lh-new{background:#d1452b;border-radius:2px}
 .lh-x.lh-new{color:#d1452b}
+.lh-on.lh-done{background:rgba(209,69,43,.38);border-radius:2px}
+.lh-x.lh-done{color:rgba(209,69,43,.45)}
 .lh-on.lh-where{background:#e3b000;border-radius:2px}
 .lh-x.lh-where{color:#e3b000}
 .lh-on.lh-wrong{background:#8b3fd1;outline:3px solid rgba(139,63,209,.35)}
 .lh-x.lh-wrong{color:#8b3fd1}
 .lh-on.lh-ghost{background:rgba(40,120,220,.45);border-radius:2px}
 .lh-x{font:bold 18px/16px sans-serif;text-align:center}
-#lh-panel{position:fixed;right:12px;bottom:12px;z-index:2147483000;width:236px;background:#fbfbf8;color:#1d1d1b;border:1px solid #cfcfc8;border-radius:6px;font:13px/1.5 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+#lh-panel{position:fixed;right:12px;bottom:12px;z-index:2147483000;width:256px;background:#fbfbf8;color:#1d1d1b;border:1px solid #cfcfc8;border-radius:6px;font:13px/1.5 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 #lh-panel,#lh-panel:focus,#lh-panel:focus-within{outline:none!important;border:1px solid #cfcfc8!important;box-shadow:0 1px 4px rgba(0,0,0,.08)!important}
 #lh-panel .lh-head{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #e3e3dc;font-weight:600;cursor:pointer;user-select:none}
 #lh-panel .lh-body{padding:8px 10px 10px}
@@ -330,7 +391,7 @@
 #lh-panel.lh-min .lh-head{border-bottom:0}
 #lh-panel button{font:inherit;padding:3px 9px;margin:0 4px 4px 0;border:1px solid #bdbdb5;border-radius:4px;background:#fff;color:inherit;cursor:pointer}
 #lh-panel .lh-modes{display:flex;margin-bottom:6px}
-#lh-panel .lh-modes button{flex:1;margin:0;border-radius:0;border-left-width:0;padding:3px 0}
+#lh-panel .lh-modes button{flex:1 1 auto;margin:0;border-radius:0;border-left-width:0;padding:3px 0;font-size:12.5px;white-space:nowrap}
 #lh-panel .lh-modes button:first-child{border-left-width:1px;border-radius:4px 0 0 4px}
 #lh-panel .lh-modes button:last-child{border-radius:0 4px 4px 0}
 #lh-panel .lh-modes button.on{background:#1d1d1b;color:#fff;border-color:#1d1d1b}

@@ -208,19 +208,20 @@ EXT_BODY = """
 
 <h2>도움 단계</h2>
 <div class="demo">
-<input type="radio" name="m" id="m1" checked><input type="radio" name="m" id="m2"><input type="radio" name="m" id="m3"><input type="radio" name="m" id="m4">
-<div class="seg"><label for="m1">패턴</label><label for="m2">힌트</label><label for="m3">실수</label><label for="m4">풀이</label></div>
-<div class="pane p1"><img src="img/mode-pattern.png" width="597" height="339" alt="패턴 단계 화면"><p>쓸 수 있는 패턴 자리에 번호. 답은 안 보인다.</p></div>
-<div class="pane p2"><img src="img/mode-hint.png" width="597" height="339" alt="힌트 단계 화면"><p>다음 한 수. 볼 곳 먼저, 누르면 답.</p></div>
-<div class="pane p3"><img src="img/mode-mistake.png" width="597" height="339" alt="실수 단계 화면"><p>힌트 없이 틀린 것만 보라색.</p></div>
-<div class="pane p4"><img src="img/mode-solve.png" width="597" height="339" alt="풀이 단계 화면"><p>한 수씩 두기, 끝까지 풀기, 정답 겹쳐 보기.</p></div>
+<input type="radio" name="m" id="m1" checked><input type="radio" name="m" id="m2"><input type="radio" name="m" id="m5"><input type="radio" name="m" id="m3"><input type="radio" name="m" id="m4">
+<div class="seg"><label for="m1">패턴</label><label for="m2">힌트</label><label for="m5">따라가기</label><label for="m3">실수</label><label for="m4">풀이</label></div>
+<div class="pane p1"><img src="img/mode-pattern.png" width="617" height="339" alt="패턴 단계 화면"><p>쓸 수 있는 패턴 자리에 번호. 답은 안 보인다.</p></div>
+<div class="pane p2"><img src="img/mode-hint.png" width="617" height="339" alt="힌트 단계 화면"><p>다음 한 수. 볼 곳 먼저, 누르면 답.</p></div>
+<div class="pane p5"><img src="img/mode-step.png" width="617" height="339" alt="따라가기 단계 화면"><p>규칙을 한 단계씩. 보여 준 대로 그리면 다음 단계로. ◀ ▶로 앞뒤를 본다.</p></div>
+<div class="pane p3"><img src="img/mode-mistake.png" width="617" height="339" alt="실수 단계 화면"><p>힌트 없이 틀린 것만 보라색.</p></div>
+<div class="pane p4"><img src="img/mode-solve.png" width="617" height="339" alt="풀이 단계 화면"><p>한 수씩 두기, 끝까지 풀기, 정답 겹쳐 보기.</p></div>
 </div>
 
 <div class="demo">
 <input type="checkbox" id="lv">
 <label class="tgl" for="lv"><span></span>틀린 곳 바로 표시</label>
-<div class="pane off"><img src="img/mode-live-off.png" width="597" height="339" alt="틀린 곳 표시를 끈 화면"></div>
-<div class="pane on"><img src="img/mode-live-on.png" width="597" height="339" alt="틀린 곳 표시를 켠 화면: 틀린 선과 x가 보라색"></div>
+<div class="pane off"><img src="img/mode-live-off.png" width="617" height="339" alt="틀린 곳 표시를 끈 화면"></div>
+<div class="pane on"><img src="img/mode-live-on.png" width="617" height="339" alt="틀린 곳 표시를 켠 화면: 틀린 선과 x가 보라색"></div>
 <p>어느 단계에서든 켤 수 있다.</p>
 </div>
 
@@ -288,11 +289,11 @@ footer{color:var(--ink)}
 .demo{margin:14px 0 8px}
 .demo>input{position:absolute;opacity:0;pointer-events:none}
 .seg{display:inline-flex;border:1px solid var(--ink);border-radius:5px;overflow:hidden;margin-bottom:10px}
-.seg label{padding:5px 18px;cursor:pointer;border-left:1px solid var(--ink);user-select:none}
+.seg label{padding:5px 14px;white-space:nowrap;cursor:pointer;border-left:1px solid var(--ink);user-select:none}
 .seg label:first-child{border-left:0}
-#m1:checked~.seg label[for=m1],#m2:checked~.seg label[for=m2],#m3:checked~.seg label[for=m3],#m4:checked~.seg label[for=m4]{background:var(--ink);color:var(--bg)}
+#m1:checked~.seg label[for=m1],#m5:checked~.seg label[for=m5],#m2:checked~.seg label[for=m2],#m3:checked~.seg label[for=m3],#m4:checked~.seg label[for=m4]{background:var(--ink);color:var(--bg)}
 .demo .pane{display:none}
-#m1:checked~.p1,#m2:checked~.p2,#m3:checked~.p3,#m4:checked~.p4{display:block}
+#m1:checked~.p1,#m5:checked~.p5,#m2:checked~.p2,#m3:checked~.p3,#m4:checked~.p4{display:block}
 #lv:not(:checked)~.off,#lv:checked~.on{display:block}
 .demo img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:4px}
 .demo .pane p,.demo>p{margin:8px 0 0}

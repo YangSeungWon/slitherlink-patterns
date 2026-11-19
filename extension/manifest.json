@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "슬리더링크 패턴 힌트",
-  "version": "0.2.0",
-  "description": "puzzle-loop.com 도우미. 패턴 자리 표시, 힌트, 실수 표시, 풀이 중 도움 단계를 고른다.",
+  "version": "0.3.0",
+  "description": "puzzle-loop.com 도우미. 패턴 자리 표시, 힌트, 단계별 따라가기, 실수 표시, 풀이 중 도움 단계를 고른다.",
   "icons": { "128": "icon.png" },
   "content_scripts": [
     {

@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "슬리더링크 패턴 힌트",
+  "version": "0.1.0",
+  "description": "puzzle-loop.com에서 지금 판에 쓸 수 있는 패턴을 하나씩 짚어 준다.",
+  "icons": { "128": "icon.png" },
+  "content_scripts": [
+    {
+      "matches": ["*://*.puzzle-loop.com/*", "*://puzzle-loop.com/*"],
+      "js": ["engine.js", "content.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": { "id": "loop-hint@ysw.kr", "strict_min_version": "128.0" }
+  }
+}

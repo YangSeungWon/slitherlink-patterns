@@ -193,6 +193,30 @@ steps = [
     '연필로 따로 표시해 두면 되돌리기 쉽다.',
 ]
 
+IDS = {
+    '0': 'zero', '남은 변 세기': 'count', '점 규칙': 'vertex',
+    '모서리의 3': 'corner-3', '모서리의 1': 'corner-1', '모서리의 2': 'corner-2',
+    '0 옆의 3': 'zero-3', '가로로 붙은 3-3': 'adj-33', '대각선 3-3': 'diag-33', '사이에 2가 낀 대각선 3-2-3': 'diag-323',
+    '3: 바깥이 막힌 꼭짓점': 'c3-blocked', '3: 선이 들어오는 꼭짓점': 'c3-enter',
+    '1: 바깥이 막힌 꼭짓점': 'c1-blocked', '1: 선이 들어오는 꼭짓점': 'c1-enter', '2: 대각선으로 전달': 'c2-pass',
+    '작은 고리 금지': 'small-loop', '경계 통과는 짝수': 'parity', '안과 밖 칠하기': 'color',
+}
+
+EXT = '''<h2 id="ext"><span>+</span>힌트 확장 프로그램</h2>
+<p>puzzle-loop.com에서 지금 판에 쓸 수 있는 가장 쉬운 패턴을 하나 찾아 준다. 답을 통째로 보여주지 않고 단계를 나눈다.</p>
+<ol>
+<li><b>힌트</b>: 어느 칸을 봐야 하는지 노랗게 표시하고 패턴 이름을 알려 준다.</li>
+<li><b>보여주기</b>: 그 패턴으로 생기는 선과 x를 빨갛게 표시한다.</li>
+<li><b>실수 확인</b>: 정답과 다른 선이나 x를 보라색으로 표시한다.</li>
+</ol>
+<p>패턴 이름을 누르면 이 페이지의 해당 설명으로 온다. 순위에 올라가는 판에서는 쓰지 않는 게 좋다.</p>
+<p><a href="loop-hint.zip">loop-hint.zip 내려받기</a></p>
+<h3>Chrome, Edge, Whale</h3>
+<p>압축을 푼다. <code>chrome://extensions</code>에서 개발자 모드를 켜고 <b>압축해제된 확장 프로그램을 로드</b>로 푼 폴더를 고른다.</p>
+<h3>Firefox</h3>
+<p><code>about:debugging#/runtime/this-firefox</code>에서 <b>임시 부가 기능 로드</b>로 zip 파일을 고른다. 서명되지 않은 부가 기능이라 브라우저를 끄면 사라진다.</p>
+'''
+
 # ---------------------------------------------------------------- HTML
 
 CSS = """
@@ -227,7 +251,7 @@ svg{display:block;max-width:100%;height:auto}
 .nx{stroke:var(--new);stroke-width:1.8;fill:none}
 .wall{stroke:var(--wall);stroke-width:5}
 .cut{fill:none;stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 3}
-ol{padding-left:22px}
+ol{padding-left:22px}\ncode{font-size:14px;background:var(--in);padding:1px 4px;border-radius:3px}
 li{margin:4px 0}
 footer{margin-top:64px;font-size:14px;color:var(--mute)}
 """
@@ -267,10 +291,11 @@ def build():
         if s['intro']:
             out.append(f'<p class="mute">{s["intro"]}</p>')
         for t, txt, figs in s['items']:
-            out.append(f'<h3>{t}</h3><p>{txt}</p><div class="figs">{"".join(figs)}</div>')
+            out.append(f'<h3 id="{IDS[t]}">{t}</h3><p>{txt}</p><div class="figs">{"".join(figs)}</div>')
     out.append('<p>순서대로 시도해 본다.</p><ol>')
     out += [f'<li>{x}</li>' for x in steps]
     out.append('</ol>')
+    out.append(EXT)
     out.append('<footer>연습은 <a href="https://www.puzzle-loop.com/">puzzle-loop.com</a>에서. '
                '5x5부터 시작해 크기를 키우면 된다.</footer>')
     out.append('</main></body></html>\n')
@@ -280,4 +305,8 @@ def build():
 if __name__ == '__main__':
     with open('index.html', 'w') as f:
         f.write(build())
-    print('index.html written')
+    import zipfile
+    with zipfile.ZipFile('loop-hint.zip', 'w', zipfile.ZIP_DEFLATED) as z:
+        for name in ('manifest.json', 'engine.js', 'content.js', 'icon.png'):
+            z.write(f'extension/{name}', name)
+    print('index.html, loop-hint.zip written')

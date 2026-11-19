@@ -202,20 +202,44 @@ IDS = {
     '작은 고리 금지': 'small-loop', '경계 통과는 짝수': 'parity', '안과 밖 칠하기': 'color',
 }
 
-EXT = '''<h2 id="ext"><span>+</span>힌트 확장 프로그램</h2>
-<p>puzzle-loop.com에서 지금 판에 쓸 수 있는 가장 쉬운 패턴을 하나 찾아 준다. 답을 통째로 보여주지 않고 단계를 나눈다.</p>
+EXT_BODY = """
+<h1>힌트 확장 프로그램</h1>
+<p class="mute">puzzle-loop.com에서 쓰는 도우미. 얼마나 도와줄지 네 단계 중에 고른다. 패턴 자리만 짚어 주는 것부터 끝까지 풀어 주는 것까지.</p>
+<p><img class="shot" src="img/ext-pattern.png" width="650" height="424" alt="패턴 단계: 판의 패턴 자리에 번호가 붙어 노랗게 표시되고, 틀린 x 두 개가 보라색으로 표시된 화면. 오른쪽 패널에 번호별 패턴 이름과 틀린 곳 바로 표시 체크박스가 보인다"></p>
+<p class="dl"><a class="btn" href="loop-hint.zip">loop-hint.zip 내려받기</a> <span class="mute">Chrome, Edge, Whale, Firefox 128 이상</span></p>
+
+<h2 id="modes">도움 단계</h2>
+<p>패널 맨 위에서 고른다. 고른 단계는 다음 퍼즐에도 그대로 남는다.</p>
+<table>
+<tr><th>패턴</th><td>판에서 지금 쓸 수 있는 패턴 자리를 모두 번호로 표시하고, 번호별 패턴 이름을 보여 준다. 답은 안 보여 준다. <b>생기는 선도 보기</b>를 누르면 각 패턴으로 생기는 선과 x까지 보인다. 남은 변 세기와 점 규칙처럼 너무 기본적인 것은 뺐다.</td></tr>
+<tr><th>힌트</th><td><b>힌트</b>를 누르면 가장 쉬운 다음 한 수를 찾아 볼 곳만 노랗게 표시한다. <b>보여주기</b>를 누르면 그 한 수로 생기는 선과 x가 빨갛게 나온다.</td></tr>
+<tr><th>실수</th><td>힌트는 없다. 선이나 x를 그릴 때마다 정답과 비교해서 틀린 것만 보라색으로 표시한다.</td></tr>
+<tr><th>풀이</th><td><b>한 수</b>는 다음 한 수를 판에 직접 둔다. <b>끝까지</b>는 정답을 전부 그린다. <b>정답 겹쳐 보기</b>는 판은 그대로 두고 정답 선을 파랗게 겹쳐 보여 준다. 판에 둔 수는 사이트의 되돌리기(↶)로 취소할 수 있다.</td></tr>
+</table>
+<p><b>틀린 곳 바로 표시</b>를 켜 두면 패턴, 힌트, 풀이 단계에서도 틀린 선이나 x가 생기는 즉시 보라색으로 표시된다. 예를 들어 패턴 단계에 이것만 켜 두면, 패턴 자리를 보면서 풀다가 틀리는 순간 바로 알 수 있다. 패턴 단계는 틀린 표시를 지운 셈 치고 패턴을 찾는다.</p>
+<p>패턴 이름을 누르면 <a href="./">패턴 정리</a>의 해당 설명이 열린다. 힌트와 한 수는 0 → 판 모서리 → 붙은 3 → 남은 변 세기 → 점 규칙 → 꼭짓점 규칙 → 작은 고리 금지 → 짝수 통과 → 가정해 보기 순서로 찾는다. 판에 틀린 표시가 있으면 힌트 대신 그것부터 알려 준다.</p>
+<p class="mute">풀이의 <b>끝까지</b>로 다 맞추면 사이트가 바로 풀었다고 기록하고 결과 화면으로 넘어간다. 순위에 올라가는 판에서는 도움 없이 푸는 게 좋다.</p>
+
+<h2 id="chrome">Chrome에 설치</h2>
 <ol>
-<li><b>힌트</b>: 어느 칸을 봐야 하는지 노랗게 표시하고 패턴 이름을 알려 준다.</li>
-<li><b>보여주기</b>: 그 패턴으로 생기는 선과 x를 빨갛게 표시한다.</li>
-<li><b>실수 확인</b>: 정답과 다른 선이나 x를 보라색으로 표시한다.</li>
+<li><a href="loop-hint.zip">loop-hint.zip</a>을 받아 <b>지우지 않을 폴더</b>에 푼다. 예: <code>문서/loop-hint</code>. 크롬은 이 폴더를 계속 읽으므로 지우면 확장도 사라진다. 폴더 안에 <code>manifest.json</code>이 바로 보여야 한다.</li>
+<li>주소창에 <code>chrome://extensions</code>를 연다.</li>
+<li>오른쪽 위 <b>개발자 모드</b>를 켠다.</li>
+<li>왼쪽 위 <b>압축해제된 확장 프로그램을 로드</b>를 누르고 1에서 푼 폴더를 고른다.</li>
+<li>목록에 "슬리더링크 패턴 힌트"가 보이면 끝. 이미 열려 있던 puzzle-loop.com 탭은 새로고침한다.</li>
 </ol>
-<p>패턴 이름을 누르면 이 페이지의 해당 설명으로 온다. 순위에 올라가는 판에서는 쓰지 않는 게 좋다.</p>
-<p><a href="loop-hint.zip">loop-hint.zip 내려받기</a></p>
-<h3>Chrome, Edge, Whale</h3>
-<p>압축을 푼다. <code>chrome://extensions</code>에서 개발자 모드를 켜고 <b>압축해제된 확장 프로그램을 로드</b>로 푼 폴더를 고른다.</p>
-<h3>Firefox</h3>
-<p><code>about:debugging#/runtime/this-firefox</code>에서 <b>임시 부가 기능 로드</b>로 zip 파일을 고른다. 서명되지 않은 부가 기능이라 브라우저를 끄면 사라진다.</p>
-'''
+<p class="mute">Edge는 <code>edge://extensions</code>, Whale은 <code>whale://extensions</code>에서 같은 방법으로 설치한다. 크롬을 켤 때 개발자 모드 확장 경고가 뜰 수 있는데 무시해도 된다.</p>
+
+<h2 id="update">업데이트</h2>
+<p>새 zip을 받아 같은 폴더에 덮어쓰고, <code>chrome://extensions</code>의 확장 카드에서 새로고침(↻) 버튼을 누른다.</p>
+
+<h2 id="firefox">Firefox에 설치</h2>
+<p><code>about:debugging#/runtime/this-firefox</code>를 열고 <b>임시 부가 기능 로드</b>로 zip 파일을 고른다. 서명되지 않은 부가 기능이라 브라우저를 끄면 사라진다.</p>
+
+<h2 id="how">어떻게 동작하나</h2>
+<p>puzzle-loop.com 페이지가 들고 있는 판 상태를 읽어서, <a href="./">패턴 정리</a>에 있는 규칙을 쉬운 순서대로 대 본다. 처음 들어맞는 규칙이 힌트가 된다. 서버로 아무것도 보내지 않고 브라우저 안에서만 계산한다.</p>
+<p>사이트의 5×5부터 30×40까지 여러 크기로 시험했을 때, 힌트만 따라가도 모두 끝까지 풀렸고 정답과 어긋난 힌트는 없었다. 소스는 <a href="https://github.com/YangSeungWon/slitherlink-patterns">GitHub</a>에 있다.</p>
+"""
 
 # ---------------------------------------------------------------- HTML
 
@@ -251,9 +275,33 @@ svg{display:block;max-width:100%;height:auto}
 .nx{stroke:var(--new);stroke-width:1.8;fill:none}
 .wall{stroke:var(--wall);stroke-width:5}
 .cut{fill:none;stroke:var(--mute);stroke-width:1.2;stroke-dasharray:4 3}
-ol{padding-left:22px}\ncode{font-size:14px;background:var(--in);padding:1px 4px;border-radius:3px}
+ol{padding-left:22px}
+code{font-size:14px;background:var(--in);padding:1px 4px;border-radius:3px}
 li{margin:4px 0}
 footer{margin-top:64px;font-size:14px;color:var(--mute)}
+
+.top{border-bottom:1px solid var(--rule);background:var(--bg)}
+.top div{max-width:760px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:4px 18px;flex-wrap:wrap}
+.top .home{font-weight:700;text-decoration:none;padding:12px 0;margin-right:8px}
+.top .tab{text-decoration:none;color:var(--mute);padding:12px 0;border-bottom:2px solid transparent;margin-bottom:-1px}
+.top .tab.on{color:var(--ink);border-bottom-color:var(--ink)}
+.top .tab:hover{color:var(--ink)}
+.top .ext{margin-left:auto}
+main{padding-top:32px}
+.over{margin:20px 0 0}
+.over h4{font-size:14px;font-weight:600;margin:18px 0 6px;color:var(--mute)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.tile{display:block;text-decoration:none;border:1px solid var(--rule);border-radius:4px;padding:6px 6px 4px}
+.tile:hover{border-color:var(--mute)}
+.tile svg{height:68px;width:auto;margin:0 auto}
+.tile span{display:block;font-size:12.5px;line-height:1.35;margin-top:4px}
+.shot{max-width:100%;height:auto;border:1px solid var(--rule);border-radius:4px}
+.btn{display:inline-block;padding:7px 14px;border:1px solid var(--ink);border-radius:4px;text-decoration:none;font-weight:600;margin-right:8px}
+.dl{margin:14px 0}
+table{border-collapse:collapse;margin:10px 0;width:100%}
+th,td{text-align:left;vertical-align:top;padding:7px 10px 7px 0;border-top:1px solid var(--rule);font-size:15px}
+th{white-space:nowrap;padding-right:16px}
+h4 a{text-decoration:none}
 """
 
 
@@ -265,27 +313,53 @@ def legend_x(cls):
     return f'<svg width="12" height="12"><path class="{cls}" d="M1.5 1.5L10.5 10.5M1.5 10.5L10.5 1.5"/></svg>'
 
 
-def build():
-    out = ['<!doctype html><html lang="ko"><head><meta charset="utf-8">',
-           '<meta name="viewport" content="width=device-width,initial-scale=1">',
-           '<title>슬리더링크 패턴</title>',
-           '<meta name="description" content="슬리더링크(Slitherlink)를 풀 때 쓰는 패턴을 쉬운 것부터 그림으로 정리했다.">',
-           '<link rel="icon" href="favicon.svg">',
-           f'<style>{CSS}</style></head><body><main>',
-           '<h1>슬리더링크 패턴</h1>',
+TABS = [('index.html', './', '패턴 정리'), ('ext.html', 'ext.html', '힌트 확장 프로그램')]
+
+
+def page(fname, title, desc, body):
+    tabs = ''.join(f'<a class="tab{" on" if f == fname else ""}" href="{href}">{name}</a>' for f, href, name in TABS)
+    return '\n'.join([
+        '<!doctype html><html lang="ko"><head><meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width,initial-scale=1">',
+        f'<title>{title}</title>',
+        f'<meta name="description" content="{desc}">',
+        '<link rel="icon" href="favicon.svg">',
+        f'<style>{CSS}</style></head><body>',
+        f'<header class="top"><div><a class="home" href="./">슬리더링크</a>{tabs}'
+        '<a class="tab ext" href="https://github.com/YangSeungWon/slitherlink-patterns">GitHub</a></div></header>',
+        '<main>', body,
+        '<footer>연습은 <a href="https://www.puzzle-loop.com/">puzzle-loop.com</a>에서. 5x5부터 시작해 크기를 키우면 된다.</footer>',
+        '</main></body></html>\n'])
+
+
+def overview():
+    out = ['<div class="over">']
+    for i, s in enumerate(sections, 1):
+        if not s['items']:
+            out.append(f'<h4><a href="#s{i}">{i}. {s["title"]}</a></h4>')
+            continue
+        out.append(f'<h4><a href="#s{i}">{i}. {s["title"]}</a></h4><div class="tiles">')
+        for t, _, figs in s['items']:
+            svg = figs[0][figs[0].index('<svg'):figs[0].index('</svg>') + 6]
+            out.append(f'<a class="tile" href="#{IDS[t]}">{svg}<span>{t}</span></a>')
+        out.append('</div>')
+    out.append('</div>')
+    return ''.join(out)
+
+
+def build_patterns():
+    out = ['<h1>슬리더링크 패턴</h1>',
            '<p class="mute">칸의 숫자는 그 칸을 둘러싼 선의 개수. 점을 이어 하나의 고리를 만든다. '
            '고리는 스스로 교차하거나 갈라지지 않는다.</p>',
-           '<p class="mute">풀면서 옆에 띄워 두고 보려고 만든 정리. 위에서 아래로 갈수록 어렵다.</p>',
+           '<p class="mute">풀면서 옆에 띄워 두고 보려고 만든 정리. 위에서 아래로 갈수록 어렵다. '
+           'puzzle-loop.com에서 힌트를 받고 싶으면 <a href="ext.html">확장 프로그램</a>.</p>',
            '<div class="legend">',
            f'<span>{legend_line("l")}이미 있는 선</span>',
            f'<span>{legend_x("x")}이미 있는 x</span>',
            f'<span>{legend_line("nl")}그래서 생기는 선</span>',
            f'<span>{legend_x("nx")}그래서 생기는 x</span>',
            f'<span>{legend_line("wall")}판의 가장자리</span>',
-           '</div><nav>']
-    for i, s in enumerate(sections, 1):
-        out.append(f'<a href="#s{i}">{i}. {s["title"]}</a>')
-    out.append('</nav>')
+           '</div>', overview()]
     for i, s in enumerate(sections, 1):
         out.append(f'<h2 id="s{i}"><span>{i}</span>{s["title"]}</h2>')
         if s['intro']:
@@ -295,18 +369,16 @@ def build():
     out.append('<p>순서대로 시도해 본다.</p><ol>')
     out += [f'<li>{x}</li>' for x in steps]
     out.append('</ol>')
-    out.append(EXT)
-    out.append('<footer>연습은 <a href="https://www.puzzle-loop.com/">puzzle-loop.com</a>에서. '
-               '5x5부터 시작해 크기를 키우면 된다.</footer>')
-    out.append('</main></body></html>\n')
-    return '\n'.join(out)
+    return page('index.html', '슬리더링크 패턴', '슬리더링크(Slitherlink)를 풀 때 쓰는 패턴을 쉬운 것부터 그림으로 정리했다.', '\n'.join(out))
 
 
 if __name__ == '__main__':
     with open('index.html', 'w') as f:
-        f.write(build())
+        f.write(build_patterns())
+    with open('ext.html', 'w') as f:
+        f.write(page('ext.html', '슬리더링크 힌트 확장', 'puzzle-loop.com에서 지금 판에 쓸 수 있는 패턴을 하나씩 짚어 주는 브라우저 확장 프로그램.', EXT_BODY))
     import zipfile
     with zipfile.ZipFile('loop-hint.zip', 'w', zipfile.ZIP_DEFLATED) as z:
         for name in ('manifest.json', 'engine.js', 'content.js', 'icon.png'):
             z.write(f'extension/{name}', name)
-    print('index.html, loop-hint.zip written')
+    print('index.html, ext.html, loop-hint.zip written')

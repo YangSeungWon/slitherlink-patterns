@@ -52,3 +52,13 @@ if (process.env.TIMING) {
   while (st.includes(-1)) { const t = Date.now(); const h = nextHint(b, st); worst = Math.max(worst, Date.now() - t); if (!h) break; for (const [e, v] of h.edges) st[e] = v; }
   console.log('  worst hint ms', worst);
 }
+// 패턴 모드: 빈 판에서 찾은 모든 자리가 정답과 맞는지
+{
+  const [task, W, H] = cases[0];
+  const b = new Board(W, H, parse(task, W, H));
+  const sol = solve(b);
+  const st = new Array(b.N).fill(-1);
+  const all = require('./engine.js').allPatterns(b, st);
+  const bad = all.filter(h => h.edges.some(([e, v]) => sol[e] !== v));
+  console.log('allPatterns', all.length, 'instances', bad.length ? 'WRONG' : 'ok', [...new Set(all.map(h => h.id))].join(','));
+}

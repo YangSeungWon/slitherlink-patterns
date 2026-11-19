@@ -42,15 +42,15 @@
 
   const cellName = (r, c) => `(${r + 1},${c + 1})`;
 
-  function ruleZero(b, st) {
+  function ruleZero(b, st, acc) {
     for (let r = 0; r < b.H; r++) for (let c = 0; c < b.W; c++) if (b.clue(r, c) === 0) {
       const h = hint(st, 'zero', '0', `${cellName(r, c)}의 0 둘레에는 선이 없다.`, b.cellEdges(r, c).map(e => [e, 0]), { cells: [[r, c]] });
-      if (h) return h;
+      if (h) { if (acc) acc.push(h); else return h; }
     }
     return null;
   }
 
-  function ruleBoardCorner(b, st) {
+  function ruleBoardCorner(b, st, acc) {
     const W = b.W, H = b.H;
     if (W < 2 || H < 2) return null;
     const cs = [
@@ -64,23 +64,23 @@
       if (n === 3) h = hint(st, 'corner-3', '모서리의 3', `판 모서리의 3: 바깥쪽 두 변이 선.`, outer.map(e => [e, 1]));
       if (n === 1) h = hint(st, 'corner-1', '모서리의 1', `판 모서리의 1: 바깥쪽 두 변은 x.`, outer.map(e => [e, 0]));
       if (n === 2) h = hint(st, 'corner-2', '모서리의 2', `판 모서리의 2: 한 칸씩 떨어진 가장자리 두 변이 선.`, two.map(e => [e, 1]));
-      if (h) { h.cells = [[r, c]]; return h; }
+      if (h) { h.cells = [[r, c]]; if (acc) acc.push(h); else return h; }
     }
     return null;
   }
 
-  function rule33(b, st) {
+  function rule33(b, st, acc) {
     for (let r = 0; r < b.H; r++) for (let c = 0; c < b.W; c++) {
       if (b.clue(r, c) !== 3) continue;
       if (b.clue(r, c + 1) === 3) {
         const h = hint(st, 'adj-33', '가로로 붙은 3-3', `${cellName(r, c)}와 ${cellName(r, c + 1)}의 3-3: 평행한 세 변이 선, 가운데 선의 위아래 연장선은 x.`,
           [[b.v(r, c), 1], [b.v(r, c + 1), 1], [b.v(r, c + 2), 1], [b.v(r - 1, c + 1), 0], [b.v(r + 1, c + 1), 0]], { cells: [[r, c], [r, c + 1]] });
-        if (h) return h;
+        if (h) { if (acc) acc.push(h); else return h; }
       }
       if (b.clue(r + 1, c) === 3) {
         const h = hint(st, 'adj-33', '세로로 붙은 3-3', `${cellName(r, c)}와 ${cellName(r + 1, c)}의 3-3: 평행한 세 변이 선, 가운데 선의 양옆 연장선은 x.`,
           [[b.h(r, c), 1], [b.h(r + 1, c), 1], [b.h(r + 2, c), 1], [b.h(r + 1, c - 1), 0], [b.h(r + 1, c + 1), 0]], { cells: [[r, c], [r + 1, c]] });
-        if (h) return h;
+        if (h) { if (acc) acc.push(h); else return h; }
       }
       for (const dc of [1, -1]) {
         let k = 1;
@@ -94,7 +94,7 @@
         const name = k === 1 ? '대각선 3-3' : '대각선 3-2-3';
         const h = hint(st, k === 1 ? 'diag-33' : 'diag-323', name,
           `${cellName(r, c)}와 ${cellName(r2, c2)}의 ${name}: 서로 먼 쪽 모서리의 두 변씩이 선.`, set, { cells });
-        if (h) return h;
+        if (h) { if (acc) acc.push(h); else return h; }
       }
     }
     return null;
@@ -126,7 +126,7 @@
     return null;
   }
 
-  function ruleCorner(b, st) {
+  function ruleCorner(b, st, acc) {
     for (let r = 0; r < b.H; r++) for (let c = 0; c < b.W; c++) {
       const n = b.clue(r, c); if (n < 1 || n > 3) continue;
       for (const dr of [0, 1]) for (const dc of [0, 1]) {
@@ -152,7 +152,7 @@
               h = hint(st, 'c2-pass', '2: 대각선으로 전달', `${cellName(r, c)}의 2: 반대편 꼭짓점에서 선은 이미 밖으로 나가 있으니, 바깥 다른 변은 x.`, un2.map(e => [e, 0]));
           }
         }
-        if (h) { h.cells = [[r, c]]; h.verts = [[k.vr, k.vc]]; return h; }
+        if (h) { h.cells = [[r, c]]; h.verts = [[k.vr, k.vc]]; if (acc) acc.push(h); else return h; }
       }
     }
     return null;
@@ -178,15 +178,18 @@
     return { adj, comp, size, total, key };
   }
 
-  function ruleLoop(b, st) {
+  function ruleLoop(b, st, acc) {
     const g = segments(b, st);
     for (let i = 0; i < b.N; i++) {
       if (st[i] !== -1) continue;
       const [a, c] = b.E[i].ends.map(g.key);
       if (!g.comp.has(a) || !g.comp.has(c) || g.comp.get(a) !== g.comp.get(c)) continue;
       if (g.adj.get(a).length !== 1 || g.adj.get(c).length !== 1) continue;
-      if (g.size.get(g.comp.get(a)) < g.total)
-        return hint(st, 'small-loop', '작은 고리 금지', '이 변을 이으면 고리가 일찍 닫힌다. 다른 곳에 선이 남아 있으니 x.', [[i, 0]], { verts: [b.E[i].ends[0], b.E[i].ends[1]] });
+      if (g.size.get(g.comp.get(a)) >= g.total) continue;
+      {
+        const h = hint(st, 'small-loop', '작은 고리 금지', '이 변을 이으면 고리가 일찍 닫힌다. 다른 곳에 선이 남아 있으니 x.', [[i, 0]], { verts: [b.E[i].ends[0], b.E[i].ends[1]] });
+        if (h) { if (acc) acc.push(h); else return h; }
+      }
     }
     return null;
   }
@@ -271,6 +274,13 @@
 
   const RULES = [ruleZero, ruleBoardCorner, rule33, ruleCount, ruleVertex, ruleCorner, ruleLoop, ruleParity, ruleTrial];
 
+  // 패턴 모드: 기본 규칙(세기, 점)을 뺀 이름 붙은 패턴의 모든 자리
+  function allPatterns(b, st) {
+    const acc = [];
+    for (const rule of [ruleZero, ruleBoardCorner, rule33, ruleCorner, ruleLoop]) rule(b, st, acc);
+    return acc;
+  }
+
   function nextHint(b, st) {
     for (const rule of RULES) { const h = rule(b, st); if (h) return h; }
     return null;
@@ -321,7 +331,7 @@
     return found;
   }
 
-  const api = { Board, nextHint, solve, propagate, RULES };
+  const api = { Board, nextHint, allPatterns, solve, propagate, RULES };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.LoopEngine = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

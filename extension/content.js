@@ -191,7 +191,7 @@
       byName.get(h.id).nums.push(i + 1);
     });
     const rows = [...byName].map(([id, o]) => `<div>${o.nums.join(', ')} · ${link(id, o.name)}</div>`).join('');
-    say(`패턴 자리 ${all.length}곳${nWrong ? ` <span style="color:#8b3fd1">(틀린 표시 ${nWrong}개는 빼고 봤다)</span>` : ''}${rows}`);
+    say(`패턴 자리 ${all.length}곳${nWrong && liveCheck ? ` <span style="color:#8b3fd1">(틀린 표시 ${nWrong}개는 빼고 봤다)</span>` : ''}${rows}`);
   }
 
   function showMistakes(quiet) {
@@ -323,6 +323,7 @@
 .lh-on.lh-ghost{background:rgba(40,120,220,.45);border-radius:2px}
 .lh-x{font:bold 18px/16px sans-serif;text-align:center}
 #lh-panel{position:fixed;right:12px;bottom:12px;z-index:2147483000;width:236px;background:#fbfbf8;color:#1d1d1b;border:1px solid #cfcfc8;border-radius:6px;font:13px/1.5 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+#lh-panel,#lh-panel:focus,#lh-panel:focus-within{outline:none!important;border:1px solid #cfcfc8!important;box-shadow:0 1px 4px rgba(0,0,0,.08)!important}
 #lh-panel .lh-head{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #e3e3dc;font-weight:600;cursor:pointer;user-select:none}
 #lh-panel .lh-body{padding:8px 10px 10px}
 #lh-panel.lh-min .lh-body{display:none}
@@ -334,8 +335,10 @@
 #lh-panel .lh-modes button:last-child{border-radius:0 4px 4px 0}
 #lh-panel .lh-modes button.on{background:#1d1d1b;color:#fff;border-color:#1d1d1b}
 #lh-panel .lh-desc{color:#6b6b66;font-size:12px;margin-bottom:6px}
-#lh-panel .lh-live{display:flex;align-items:center;gap:5px;font-size:12px;color:#6b6b66;margin:0 0 4px;cursor:pointer;user-select:none}
-#lh-panel .lh-live input{all:revert;display:inline-block;width:13px;height:13px;margin:0;flex:none}
+#lh-panel button.lh-live{display:flex;align-items:center;gap:6px;border:0;background:none;padding:2px 0;margin:0 0 4px;font-size:12.5px}
+#lh-panel .lh-box{width:13px;height:13px;border:1.5px solid #8a8a83;border-radius:3px;flex:none;position:relative}
+#lh-panel .lh-live[aria-pressed=true] .lh-box{background:#8b3fd1;border-color:#8b3fd1}
+#lh-panel .lh-live[aria-pressed=true] .lh-box::after{content:"";position:absolute;left:3px;top:0;width:3px;height:7px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 #lh-panel .lh-msg{min-height:20px;margin-top:2px;word-break:keep-all;max-height:180px;overflow:auto}
 #lh-panel a{color:inherit}
 `;
@@ -344,15 +347,15 @@
     panel.id = 'lh-panel';
     panel.innerHTML = `<div class="lh-head"><span>패턴 힌트</span><span class="lh-tog">–</span></div>
 <div class="lh-body"><div class="lh-modes">${MODES.map(([m, l]) => `<button data-m="${m}">${l}</button>`).join('')}</div>
-<div class="lh-desc"></div><div class="lh-actions"></div><label class="lh-live"><input type="checkbox">틀린 곳 바로 표시</label><div class="lh-msg"></div></div>`;
+<div class="lh-desc"></div><div class="lh-actions"></div><button type="button" class="lh-live" aria-pressed="false"><span class="lh-box"></span>틀린 곳 바로 표시</button><div class="lh-msg"></div></div>`;
     document.body.appendChild(panel);
     msg = panel.querySelector('.lh-msg');
     actions = panel.querySelector('.lh-actions');
     panel.querySelectorAll('.lh-modes button').forEach(b => { b.onclick = () => setMode(b.dataset.m); });
-    const live = panel.querySelector('.lh-live input');
+    const live = panel.querySelector('.lh-live');
     try { liveCheck = localStorage.getItem('lh-live') === '1'; } catch (e) {}
-    live.checked = liveCheck;
-    live.onchange = () => { liveCheck = live.checked; try { localStorage.setItem('lh-live', liveCheck ? '1' : ''); } catch (e) {} busy(() => { refresh(); if (liveCheck && mode !== 'mistake') say(msg.innerHTML === '계산 중…' ? '' : msg.innerHTML); }); };
+    live.setAttribute('aria-pressed', String(liveCheck));
+    live.onclick = () => { liveCheck = !liveCheck; live.setAttribute('aria-pressed', String(liveCheck)); try { localStorage.setItem('lh-live', liveCheck ? '1' : ''); } catch (e) {} busy(() => { refresh(); if (liveCheck && mode !== 'mistake') say(msg.innerHTML === '계산 중…' ? '' : msg.innerHTML); }); };
     const head = panel.querySelector('.lh-head'), tog = panel.querySelector('.lh-tog');
     const setMin = (m) => { panel.classList.toggle('lh-min', m); tog.textContent = m ? '+' : '–'; try { localStorage.setItem('lh-min', m ? '1' : ''); } catch (e) {} };
     head.onclick = () => setMin(!panel.classList.contains('lh-min'));

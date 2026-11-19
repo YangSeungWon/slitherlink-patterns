@@ -203,42 +203,40 @@ IDS = {
 }
 
 EXT_BODY = """
-<h1>힌트 확장 프로그램</h1>
-<p class="mute">puzzle-loop.com에서 쓰는 도우미. 얼마나 도와줄지 네 단계 중에 고른다. 패턴 자리만 짚어 주는 것부터 끝까지 풀어 주는 것까지.</p>
-<p><img class="shot" src="img/ext-pattern.png" width="650" height="424" alt="패턴 단계: 판의 패턴 자리에 번호가 붙어 노랗게 표시되고, 틀린 x 두 개가 보라색으로 표시된 화면. 오른쪽 패널에 번호별 패턴 이름과 틀린 곳 바로 표시 체크박스가 보인다"></p>
-<p class="dl"><a class="btn" href="loop-hint.zip">loop-hint.zip 내려받기</a> <span class="mute">Chrome, Edge, Whale, Firefox 128 이상</span></p>
+<div class="hero"><div><h1>힌트 확장 프로그램</h1><p>puzzle-loop.com 오른쪽 아래에 붙는 도우미. 얼마나 도와줄지는 직접 고른다.</p></div>
+<a class="btn" href="loop-hint.zip">loop-hint.zip 받기</a></div>
 
-<h2 id="modes">도움 단계</h2>
-<p>패널 맨 위에서 고른다. 고른 단계는 다음 퍼즐에도 그대로 남는다.</p>
-<table>
-<tr><th>패턴</th><td>판에서 지금 쓸 수 있는 패턴 자리를 모두 번호로 표시하고, 번호별 패턴 이름을 보여 준다. 답은 안 보여 준다. <b>생기는 선도 보기</b>를 누르면 각 패턴으로 생기는 선과 x까지 보인다. 남은 변 세기와 점 규칙처럼 너무 기본적인 것은 뺐다.</td></tr>
-<tr><th>힌트</th><td><b>힌트</b>를 누르면 가장 쉬운 다음 한 수를 찾아 볼 곳만 노랗게 표시한다. <b>보여주기</b>를 누르면 그 한 수로 생기는 선과 x가 빨갛게 나온다.</td></tr>
-<tr><th>실수</th><td>힌트는 없다. 선이나 x를 그릴 때마다 정답과 비교해서 틀린 것만 보라색으로 표시한다.</td></tr>
-<tr><th>풀이</th><td><b>한 수</b>는 다음 한 수를 판에 직접 둔다. <b>끝까지</b>는 정답을 전부 그린다. <b>정답 겹쳐 보기</b>는 판은 그대로 두고 정답 선을 파랗게 겹쳐 보여 준다. 판에 둔 수는 사이트의 되돌리기(↶)로 취소할 수 있다.</td></tr>
-</table>
-<p><b>틀린 곳 바로 표시</b>를 켜 두면 패턴, 힌트, 풀이 단계에서도 틀린 선이나 x가 생기는 즉시 보라색으로 표시된다. 예를 들어 패턴 단계에 이것만 켜 두면, 패턴 자리를 보면서 풀다가 틀리는 순간 바로 알 수 있다. 패턴 단계는 틀린 표시를 지운 셈 치고 패턴을 찾는다.</p>
-<p>패턴 이름을 누르면 <a href="./">패턴 정리</a>의 해당 설명이 열린다. 힌트와 한 수는 0 → 판 모서리 → 붙은 3 → 남은 변 세기 → 점 규칙 → 꼭짓점 규칙 → 작은 고리 금지 → 짝수 통과 → 가정해 보기 순서로 찾는다. 판에 틀린 표시가 있으면 힌트 대신 그것부터 알려 준다.</p>
-<p class="mute">풀이의 <b>끝까지</b>로 다 맞추면 사이트가 바로 풀었다고 기록하고 결과 화면으로 넘어간다. 순위에 올라가는 판에서는 도움 없이 푸는 게 좋다.</p>
+<h2>도움 단계</h2>
+<div class="demo">
+<input type="radio" name="m" id="m1" checked><input type="radio" name="m" id="m2"><input type="radio" name="m" id="m3"><input type="radio" name="m" id="m4">
+<div class="seg"><label for="m1">패턴</label><label for="m2">힌트</label><label for="m3">실수</label><label for="m4">풀이</label></div>
+<div class="pane p1"><img src="img/mode-pattern.png" width="597" height="339" alt="패턴 단계 화면"><p>쓸 수 있는 패턴 자리에 번호. 답은 안 보인다.</p></div>
+<div class="pane p2"><img src="img/mode-hint.png" width="597" height="339" alt="힌트 단계 화면"><p>다음 한 수. 볼 곳 먼저, 누르면 답.</p></div>
+<div class="pane p3"><img src="img/mode-mistake.png" width="597" height="339" alt="실수 단계 화면"><p>힌트 없이 틀린 것만 보라색.</p></div>
+<div class="pane p4"><img src="img/mode-solve.png" width="597" height="339" alt="풀이 단계 화면"><p>한 수씩 두기, 끝까지 풀기, 정답 겹쳐 보기.</p></div>
+</div>
 
-<h2 id="chrome">Chrome에 설치</h2>
-<ol>
-<li><a href="loop-hint.zip">loop-hint.zip</a>을 받아 <b>지우지 않을 폴더</b>에 푼다. 예: <code>문서/loop-hint</code>. 크롬은 이 폴더를 계속 읽으므로 지우면 확장도 사라진다. 폴더 안에 <code>manifest.json</code>이 바로 보여야 한다.</li>
-<li>주소창에 <code>chrome://extensions</code>를 연다.</li>
-<li>오른쪽 위 <b>개발자 모드</b>를 켠다.</li>
-<li>왼쪽 위 <b>압축해제된 확장 프로그램을 로드</b>를 누르고 1에서 푼 폴더를 고른다.</li>
-<li>목록에 "슬리더링크 패턴 힌트"가 보이면 끝. 이미 열려 있던 puzzle-loop.com 탭은 새로고침한다.</li>
-</ol>
-<p class="mute">Edge는 <code>edge://extensions</code>, Whale은 <code>whale://extensions</code>에서 같은 방법으로 설치한다. 크롬을 켤 때 개발자 모드 확장 경고가 뜰 수 있는데 무시해도 된다.</p>
+<div class="demo">
+<input type="checkbox" id="lv">
+<label class="tgl" for="lv"><span></span>틀린 곳 바로 표시</label>
+<div class="pane off"><img src="img/mode-live-off.png" width="597" height="339" alt="틀린 곳 표시를 끈 화면"></div>
+<div class="pane on"><img src="img/mode-live-on.png" width="597" height="339" alt="틀린 곳 표시를 켠 화면: 틀린 선과 x가 보라색"></div>
+<p>어느 단계에서든 켤 수 있다.</p>
+</div>
 
-<h2 id="update">업데이트</h2>
-<p>새 zip을 받아 같은 폴더에 덮어쓰고, <code>chrome://extensions</code>의 확장 카드에서 새로고침(↻) 버튼을 누른다.</p>
-
-<h2 id="firefox">Firefox에 설치</h2>
-<p><code>about:debugging#/runtime/this-firefox</code>를 열고 <b>임시 부가 기능 로드</b>로 zip 파일을 고른다. 서명되지 않은 부가 기능이라 브라우저를 끄면 사라진다.</p>
-
-<h2 id="how">어떻게 동작하나</h2>
-<p>puzzle-loop.com 페이지가 들고 있는 판 상태를 읽어서, <a href="./">패턴 정리</a>에 있는 규칙을 쉬운 순서대로 대 본다. 처음 들어맞는 규칙이 힌트가 된다. 서버로 아무것도 보내지 않고 브라우저 안에서만 계산한다.</p>
-<p>사이트의 5×5부터 30×40까지 여러 크기로 시험했을 때, 힌트만 따라가도 모두 끝까지 풀렸고 정답과 어긋난 힌트는 없었다. 소스는 <a href="https://github.com/YangSeungWon/slitherlink-patterns">GitHub</a>에 있다.</p>
+<h2>설치</h2>
+<div class="steps">
+<div class="step"><b>1</b><p><a href="loop-hint.zip">zip</a>을 받아 지우지 않을 폴더에 푼다</p></div>
+<div class="step"><b>2</b><p><code>chrome://extensions</code>에서 개발자 모드를 켠다</p></div>
+<div class="step"><b>3</b><p>압축해제된 확장 프로그램을 로드 → 푼 폴더</p></div>
+</div>
+<div class="mock" aria-hidden="true">
+<div class="bar"><span>chrome://extensions</span></div>
+<div class="row"><span class="t">확장 프로그램</span><span class="dev">개발자 모드 <i></i><b>2</b></span></div>
+<div class="row"><span class="load">압축해제된 확장 프로그램을 로드<b>3</b></span><span class="ghost">확장 프로그램 압축</span><span class="ghost">업데이트</span></div>
+<div class="card"><img src="extension/icon.png" width="28" height="28" alt=""><span>슬리더링크 패턴 힌트</span><span class="re">↻</span></div>
+</div>
+<p>업데이트는 같은 폴더에 덮어쓰고 ↻. Edge, Whale도 같다. Firefox는 <code>about:debugging</code> → 임시 부가 기능 로드 → zip.</p>
 """
 
 # ---------------------------------------------------------------- HTML
@@ -263,7 +261,7 @@ nav a{margin-right:14px;white-space:nowrap}
 .legend svg{display:inline-block;vertical-align:middle;margin-right:6px}
 .figs{display:flex;flex-wrap:wrap;gap:8px 24px;margin:10px 0 0}
 figure{margin:0}
-figcaption{font-size:13px;color:var(--mute);margin-top:2px}
+figcaption{font-size:13px;margin-top:2px}
 svg{display:block;max-width:100%;height:auto}
 .dot{fill:var(--ink)}
 .num{fill:var(--ink);font-size:17px;font-weight:600;text-anchor:middle;dominant-baseline:central}
@@ -279,6 +277,47 @@ ol{padding-left:22px}
 code{font-size:14px;background:var(--in);padding:1px 4px;border-radius:3px}
 li{margin:4px 0}
 footer{margin-top:64px;font-size:14px;color:var(--mute)}
+
+.legend{color:var(--ink)}
+footer{color:var(--ink)}
+.over .grp{font-size:14px;font-weight:600;margin:18px 0 6px}
+.over .grp a{text-decoration:none}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap}
+.hero h1{margin-bottom:4px}
+.hero p{margin:0}
+.demo{margin:14px 0 8px}
+.demo>input{position:absolute;opacity:0;pointer-events:none}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:5px;overflow:hidden;margin-bottom:10px}
+.seg label{padding:5px 18px;cursor:pointer;border-left:1px solid var(--ink);user-select:none}
+.seg label:first-child{border-left:0}
+#m1:checked~.seg label[for=m1],#m2:checked~.seg label[for=m2],#m3:checked~.seg label[for=m3],#m4:checked~.seg label[for=m4]{background:var(--ink);color:var(--bg)}
+.demo .pane{display:none}
+#m1:checked~.p1,#m2:checked~.p2,#m3:checked~.p3,#m4:checked~.p4{display:block}
+#lv:not(:checked)~.off,#lv:checked~.on{display:block}
+.demo img{display:block;max-width:100%;height:auto;border:1px solid var(--rule);border-radius:4px}
+.demo .pane p,.demo>p{margin:8px 0 0}
+.tgl{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;margin-bottom:10px;font-weight:600}
+.tgl span{width:34px;height:20px;border-radius:10px;background:var(--rule);position:relative;transition:background .15s}
+.tgl span::after{content:"";position:absolute;left:3px;top:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s}
+#lv:checked~.tgl span{background:#8b3fd1}
+#lv:checked~.tgl span::after{left:17px}
+#lv:focus-visible~.tgl,.demo>input:focus-visible+*{outline:2px solid var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0}
+.step{border:1px solid var(--rule);border-radius:5px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.step b,.mock b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:13px;line-height:22px;text-align:center}
+.step p{margin:0;font-size:15px;line-height:1.5}
+.mock{border:1px solid var(--rule);border-radius:6px;overflow:hidden;font-size:13px;margin:6px 0 12px;background:var(--bg)}
+.mock .bar{background:var(--in);padding:6px 10px}
+.mock .bar span{background:var(--bg);border-radius:12px;padding:2px 12px;font-family:ui-monospace,monospace;font-size:12px}
+.mock .row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.mock .t{font-weight:600;font-size:15px;margin-right:auto}
+.mock .dev{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.mock .dev i{width:30px;height:16px;border-radius:8px;background:#1a73e8;position:relative}
+.mock .dev i::after{content:"";position:absolute;right:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff}
+.mock .load{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ink);border-radius:4px;padding:3px 6px 3px 10px;font-weight:600}
+.mock .ghost{border:1px solid var(--rule);border-radius:4px;padding:4px 10px;color:var(--x)}
+.mock .card{display:flex;align-items:center;gap:10px;margin:12px;padding:10px 12px;border:1px solid var(--rule);border-radius:6px;max-width:300px}
+.mock .card .re{margin-left:auto;font-size:16px}
 
 .top{border-bottom:1px solid var(--rule);background:var(--bg)}
 .top div{max-width:760px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:4px 18px;flex-wrap:wrap}
@@ -336,9 +375,9 @@ def overview():
     out = ['<div class="over">']
     for i, s in enumerate(sections, 1):
         if not s['items']:
-            out.append(f'<h4><a href="#s{i}">{i}. {s["title"]}</a></h4>')
+            out.append(f'<div class="grp"><a href="#s{i}">{s["title"]}</a></div>')
             continue
-        out.append(f'<h4><a href="#s{i}">{i}. {s["title"]}</a></h4><div class="tiles">')
+        out.append(f'<div class="grp"><a href="#s{i}">{s["title"]}</a></div><div class="tiles">')
         for t, _, figs in s['items']:
             svg = figs[0][figs[0].index('<svg'):figs[0].index('</svg>') + 6]
             out.append(f'<a class="tile" href="#{IDS[t]}">{svg}<span>{t}</span></a>')
@@ -349,10 +388,7 @@ def overview():
 
 def build_patterns():
     out = ['<h1>슬리더링크 패턴</h1>',
-           '<p class="mute">칸의 숫자는 그 칸을 둘러싼 선의 개수. 점을 이어 하나의 고리를 만든다. '
-           '고리는 스스로 교차하거나 갈라지지 않는다.</p>',
-           '<p class="mute">풀면서 옆에 띄워 두고 보려고 만든 정리. 위에서 아래로 갈수록 어렵다. '
-           'puzzle-loop.com에서 힌트를 받고 싶으면 <a href="ext.html">확장 프로그램</a>.</p>',
+           '<p>숫자는 둘레의 선 개수. 점을 이어 고리 하나를 만든다. 위에서 아래로 갈수록 어렵다.</p>',
            '<div class="legend">',
            f'<span>{legend_line("l")}이미 있는 선</span>',
            f'<span>{legend_x("x")}이미 있는 x</span>',
@@ -361,12 +397,10 @@ def build_patterns():
            f'<span>{legend_line("wall")}판의 가장자리</span>',
            '</div>', overview()]
     for i, s in enumerate(sections, 1):
-        out.append(f'<h2 id="s{i}"><span>{i}</span>{s["title"]}</h2>')
-        if s['intro']:
-            out.append(f'<p class="mute">{s["intro"]}</p>')
+        out.append(f'<h2 id="s{i}">{s["title"]}</h2>')
         for t, txt, figs in s['items']:
             out.append(f'<h3 id="{IDS[t]}">{t}</h3><p>{txt}</p><div class="figs">{"".join(figs)}</div>')
-    out.append('<p>순서대로 시도해 본다.</p><ol>')
+    out.append('<ol>')
     out += [f'<li>{x}</li>' for x in steps]
     out.append('</ol>')
     return page('index.html', '슬리더링크 패턴', '슬리더링크(Slitherlink)를 풀 때 쓰는 패턴을 쉬운 것부터 그림으로 정리했다.', '\n'.join(out))
